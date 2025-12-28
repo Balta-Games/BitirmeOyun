@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4282bcb235c98284ba8047007c46dd28
+guid: 70b4d07ca3efb5d438762be4982960e7
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -35,7 +35,7 @@ ModelImporter:
       takeName: Armature|mixamo.com
       internalID: -4572650651892053679
       firstFrame: 0
-      lastFrame: 59
+      lastFrame: 22
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
