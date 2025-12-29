@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    CharacterController Controller;
+    private CharacterController Controller;
     public float Speed;
     private float RotationSpeed = 10f;
-    private float JumpStrength = 7f;
+    private float JumpStrength = 4.5f;
     public Transform Cam;
     private float Gravity;
     private Animator animator;
@@ -20,26 +20,27 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Getting Input
         float Horizontal = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         float Vertical = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
-        
         if (Controller.isGrounded && Input.GetButtonDown("Jump"))
         {
             Gravity = JumpStrength; 
         }
-
-        Gravity -= 9.81f * Time.deltaTime;
         
+        Gravity -= 9.81f * Time.deltaTime; // Applying Gravity
+        
+        // Calculating Movement
         Vector3 Movement = Cam.transform.right * Horizontal + Cam.transform.forward * Vertical;
         Movement.y = Gravity * Time.deltaTime;
-
         Controller.Move(Movement);
 
-        if (Controller.isGrounded)
+        if (Controller.isGrounded) // Reset gravity when on ground
         {
             Gravity = 0f;
         }
 
+        // Handling Character's Rotation
         Vector3 moveDir = new Vector3(Movement.x, 0f, Movement.z);
         if (moveDir.sqrMagnitude > 0.0001f)
         {
@@ -47,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, RotationSpeed * Time.deltaTime);
         }
 
+        // Aligning Player Rotation with Camera when Moving
         if (Movement.magnitude != 0f)
         {
             transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Cam.GetComponent<CameraMove>().sensivity * Time.deltaTime);
@@ -57,13 +59,14 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation = Quaternion.Lerp(transform.rotation, CamRotation, 0.1f);
         }
-
+        
+        // Updating Animator Parameters
         if (animator != null)
         {
             Vector3 horizontalVel = Controller.velocity;
             horizontalVel.y = 0f;
             animator.SetBool("isRunning", horizontalVel.magnitude > 0.1f);
-            animator.SetBool("isJumping", !Controller.isGrounded);
+            animator.SetBool("isJumping", Gravity != 0f);
         }       
     }
 }
