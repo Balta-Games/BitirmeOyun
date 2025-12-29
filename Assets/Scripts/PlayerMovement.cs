@@ -63,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 horizontalVel = Controller.velocity;
             horizontalVel.y = 0f;
             animator.SetBool("isRunning", horizontalVel.magnitude > 0.1f);
+            animator.SetBool("isJumping", !Controller.isGrounded);
         }       
     }
 }
