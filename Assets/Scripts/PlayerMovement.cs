@@ -4,6 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     CharacterController Controller;
     public float Speed;
+    public float RotationSpeed = 10f;
     public Transform Cam;
     private float Gravity;
     private Animator animator;
@@ -30,6 +31,13 @@ public class PlayerMovement : MonoBehaviour
         if (Controller.isGrounded)
         {
             Gravity = 0f;
+        }
+
+        Vector3 moveDir = new Vector3(Movement.x, 0f, Movement.z);
+        if (moveDir.sqrMagnitude > 0.0001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir.normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, RotationSpeed * Time.deltaTime);
         }
 
         if (Movement.magnitude != 0f)
