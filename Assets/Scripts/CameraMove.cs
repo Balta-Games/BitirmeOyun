@@ -11,7 +11,7 @@ public class CameraMove : MonoBehaviour
     private float currentX = 0;
     private float currentY = 0;
     public float sensivity = 100.0f;
-    public bool invertY = false;
+    public bool invertY = true;
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class CameraMove : MonoBehaviour
     {
 
         currentX += Input.GetAxis("Mouse X") * (sensivity * 2) * Time.deltaTime;
-        currentY += Input.GetAxis("Mouse Y") * (sensivity * 2) * Time.deltaTime;
+        currentY += (invertY ? -1f : 1f) * Input.GetAxis("Mouse Y") * (sensivity * 2) * Time.deltaTime;
 
         currentY = Mathf.Clamp(currentY, YMin, YMax);
 
