@@ -4,7 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
     CharacterController Controller;
     public float Speed;
-    public float RotationSpeed = 10f;
+    private float RotationSpeed = 10f;
+    private float JumpStrength = 7f;
     public Transform Cam;
     private float Gravity;
     private Animator animator;
@@ -21,10 +22,16 @@ public class PlayerMovement : MonoBehaviour
     {
         float Horizontal = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         float Vertical = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
+        
+        if (Controller.isGrounded && Input.GetButtonDown("Jump"))
+        {
+            Gravity = JumpStrength; 
+        }
+
         Gravity -= 9.81f * Time.deltaTime;
         
         Vector3 Movement = Cam.transform.right * Horizontal + Cam.transform.forward * Vertical;
-        Movement.y = Gravity;
+        Movement.y = Gravity * Time.deltaTime;
 
         Controller.Move(Movement);
 
@@ -43,7 +50,6 @@ public class PlayerMovement : MonoBehaviour
         if (Movement.magnitude != 0f)
         {
             transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Cam.GetComponent<CameraMove>().sensivity * Time.deltaTime);
-
 
             Quaternion CamRotation = Cam.rotation;
             CamRotation.x = 0f;
