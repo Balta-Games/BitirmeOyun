@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform Cam;
     private float Gravity;
     private Animator animator;
+    private float HangingTime;
+    private float HangingLimit = 0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -17,13 +19,31 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    public bool IsGrounded()
+    {
+        return HangingTime < HangingLimit;
+    }
+
+    public void HangingControl()
+    {
+        if (Controller.isGrounded)
+        {
+            HangingTime = 0;
+        }
+        else
+        {
+            HangingTime += Time.deltaTime;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        HangingControl();
         // Getting Input
         float Horizontal = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         float Vertical = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
-        if (Controller.isGrounded && Input.GetButtonDown("Jump"))
+        if (IsGrounded() && Input.GetButtonDown("Jump"))
         {
             Gravity = JumpStrength; 
         }
@@ -35,9 +55,9 @@ public class PlayerMovement : MonoBehaviour
         Movement.y = Gravity * Time.deltaTime;
         Controller.Move(Movement);
 
-        if (Controller.isGrounded) // Reset gravity when on ground
+        if (IsGrounded() && Gravity < 0f) // Reset gravity when on ground
         {
-            Gravity = 0f;
+            Gravity = -1f;
         }
 
         // Handling Character's Rotation
@@ -65,8 +85,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 horizontalVel = Controller.velocity;
             horizontalVel.y = 0f;
-            animator.SetBool("isRunning", horizontalVel.magnitude > 0.1f);
-            animator.SetBool("isJumping", Gravity != 0f);
+            animator.SetBool("isRunning", (horizontalVel.magnitude > 0.1f) && IsGrounded());
+            animator.SetBool("isJumping", !IsGrounded());
         }       
     }
 }
