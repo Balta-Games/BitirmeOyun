@@ -3,12 +3,14 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController Controller;
-    public float Speed;
-    private float RotationSpeed = 10f;
-    private float JumpStrength = 4.5f;
-    public Transform Cam;
-    private float Gravity;
     private Animator animator;
+    public Transform Cam;
+
+    private float Speed = 4f;
+    private float RotationSpeed = 20f;
+    private float JumpStrength = 4.5f;
+    private float Gravity = -9.81f;
+    private Vector3 Velocity;
     private float HangingTime;
     private float HangingLimit = 0.1f;
 
@@ -19,12 +21,14 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public bool IsGrounded()
+    // Check if the player is grounded
+    private bool IsGrounded() 
     {
         return HangingTime < HangingLimit;
     }
 
-    public void HangingControl()
+    // Manage hanging time when not grounded
+    private void HangingControl()
     {
         if (Controller.isGrounded)
         {
@@ -40,25 +44,27 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HangingControl();
+
         // Getting Input
         float Horizontal = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         float Vertical = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
         if (IsGrounded() && Input.GetButtonDown("Jump"))
         {
-            Gravity = JumpStrength; 
+            Velocity.y = JumpStrength; 
         }
-        
-        Gravity -= 9.81f * Time.deltaTime; // Applying Gravity
         
         // Calculating Movement
         Vector3 Movement = Cam.transform.right * Horizontal + Cam.transform.forward * Vertical;
-        Movement.y = Gravity * Time.deltaTime;
-        Controller.Move(Movement);
 
-        if (IsGrounded() && Gravity < 0f) // Reset gravity when on ground
+        // Applying Gravity
+        Velocity.y += Gravity * Time.deltaTime; 
+        Movement.y = Velocity.y * Time.deltaTime; 
+        if (IsGrounded() && Velocity.y <= 0f) // Reset gravity when on ground
         {
-            Gravity = -1f;
+            Velocity.y = -1f;// Small negative value to keep the player grounded
         }
+
+        Controller.Move(Movement);
 
         // Handling Character's Rotation
         Vector3 moveDir = new Vector3(Movement.x, 0f, Movement.z);
@@ -66,18 +72,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Quaternion targetRot = Quaternion.LookRotation(moveDir.normalized);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, RotationSpeed * Time.deltaTime);
-        }
-
-        // Aligning Player Rotation with Camera when Moving
-        if (Movement.magnitude != 0f)
-        {
-            transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Cam.GetComponent<CameraMove>().sensivity * Time.deltaTime);
-
-            Quaternion CamRotation = Cam.rotation;
-            CamRotation.x = 0f;
-            CamRotation.z = 0f;
-
-            transform.rotation = Quaternion.Lerp(transform.rotation, CamRotation, 0.1f);
         }
         
         // Updating Animator Parameters
