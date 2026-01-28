@@ -1,29 +1,58 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraMove : MonoBehaviour
 {
-    private const float YMin = -50.0f;
-    private const float YMax = 50.0f;
-    public Transform lookAt;
-    public float distance = 2.0f;
-    private float currentX = 0;
-    private float currentY = 0;
-    public float sensivity = 100.0f;
     private bool invertY = true;
+    public Transform lookAt;
+    public float distance;
+    private Vector2 input;
+    [SerializeField] private MouseSensivity sensivity;
+    private CameraRotation cameraRotation;
+    [SerializeField] private CameraAngle cameraAngle;
+
+    void Awake()
+    {
+        distance = Vector3.Distance(transform.position, lookAt.position);
+    }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        // Getting Mouse Input
-        currentX += Input.GetAxis("Mouse X") * (sensivity * 2) * Time.deltaTime;
-        currentY += (invertY ? -1f : 1f) * Input.GetAxis("Mouse Y") * (sensivity * 2) * Time.deltaTime;
-        currentY = Mathf.Clamp(currentY, YMin, YMax);
-
-        // Calculating Camera Position
-        Vector3 Direction = new Vector3(0, 0, -distance);
-        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
-        transform.position = lookAt.position + rotation * Direction;
-
-        transform.LookAt(lookAt.position);
+        transform.eulerAngles = new Vector3(cameraRotation.x, cameraRotation.y, 0);
+        transform.position = lookAt.position - transform.forward * distance;
     }
+
+    private void Update()
+    {
+        cameraRotation.y += input.x * sensivity.horizontal * Time.deltaTime;
+        cameraRotation.x += (invertY ? -1f : 1f) *  input.y * sensivity.vertical * Time.deltaTime;
+        cameraRotation.x = Mathf.Clamp(cameraRotation.x, cameraAngle.min, cameraAngle.max);
+    }
+
+    public void Look(InputAction.CallbackContext context)
+    {
+        input = context.ReadValue<Vector2>();
+    }
+}
+
+[Serializable]
+public struct MouseSensivity
+{
+    public float horizontal;
+    public float vertical;
+}
+
+public struct CameraRotation
+{
+    public float x;
+    public float y;
+}
+
+[Serializable]
+public struct CameraAngle
+{
+    public float min;
+    public float max;
 }
