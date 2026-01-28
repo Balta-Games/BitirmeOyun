@@ -207,9 +207,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 9251412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ef0e68181b20454993fabd64674c974, type: 3}
+  m_Script: {fileID: 11500000, guid: fb7b35d1ea593e74080f7ec293829a13, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementNew
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
 --- !u!1001 &12317745
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -576,7 +576,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9251418}
-        m_TargetAssemblyTypeName: PlayerMovementNew, Assembly-CSharp
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: Move
         m_Mode: 0
         m_Arguments:
@@ -589,6 +589,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 98eb07f2-a531-4cfa-b799-1af1159ad1d9
     m_ActionName: 'Gameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9251418}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Jump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 83212fbf-bb45-4558-935f-a7d038dc1249
+    m_ActionName: 'Gameplay/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 330585548}
+        m_TargetAssemblyTypeName: CameraMove, Assembly-CSharp
+        m_MethodName: Look
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8e1f0d3d-7309-4119-9276-645b94810b97
+    m_ActionName: 'Gameplay/Look[/Mouse/delta]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -2337,7 +2369,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraMove
   lookAt: {fileID: 2074310589}
   distance: 2
-  sensivity: 100
+  sensivity:
+    horizontal: 20
+    vertical: 20
+  cameraAngle:
+    min: 10
+    max: 50
 --- !u!1 &333857346 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1502877291743220047, guid: 110742194e741f04da0a8f463fb0bcb9, type: 3}
