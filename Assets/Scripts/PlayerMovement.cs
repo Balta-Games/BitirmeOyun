@@ -1,3 +1,4 @@
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private float gravity = -9.81f;
     private float velocity;
     private Camera mainCamera;
+    [SerializeField] private Movement movement;
 
     private void Awake()
     {
@@ -28,7 +30,9 @@ public class PlayerMovement : MonoBehaviour
     }
     private void ApplyMovement()
     {
-        characterController.Move(direction * speed * Time.deltaTime);
+        float targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
+        movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
+        characterController.Move(direction * movement.currentSpeed * Time.deltaTime);
     }
 
     private void ApplyRotation()
@@ -42,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 500f);
     }
 
-        public void Jump(InputAction.CallbackContext context)
+    public void Jump(InputAction.CallbackContext context)
     {
         if(!context.started) return;
         if(!characterController.isGrounded) return;
@@ -75,4 +79,19 @@ public class PlayerMovement : MonoBehaviour
         direction = new Vector3(input.x, 0, input.y);
     }
 
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        movement.isSprinting = context.started || context.performed;
+    }
+
+}
+
+[Serializable]
+public struct Movement
+{
+    public float speed;
+    public float multiplier;
+    public float acceleration;
+    [HideInInspector] public bool isSprinting;
+    [HideInInspector] public float currentSpeed;
 }

@@ -210,6 +210,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb7b35d1ea593e74080f7ec293829a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  movement:
+    speed: 5
+    multiplier: 2
+    acceleration: 10
+    isSprinting: 0
+    currentSpeed: 0
 --- !u!1001 &12317745
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -621,6 +627,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 8e1f0d3d-7309-4119-9276-645b94810b97
     m_ActionName: 'Gameplay/Look[/Mouse/delta]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9251418}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Sprint
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a01952ce-116e-4873-84fd-bcd059514f6b
+    m_ActionName: 'Gameplay/Sprint[/Keyboard/leftShift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
