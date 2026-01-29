@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBarUI
+public class HealthBarUI : MonoBehaviour
 {
     public float Health, MaxHealth, Width, Height;
 
