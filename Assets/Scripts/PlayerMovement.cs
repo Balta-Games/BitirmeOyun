@@ -8,15 +8,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 input;
     private CharacterController characterController;
     private Vector3 direction;
-    private float speed = 5f;
     private float gravity = -9.81f;
     private float velocity;
     private Camera mainCamera;
     [SerializeField] private Movement movement;
+    private Animator animator;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
         mainCamera = Camera.main;
     }
 
@@ -26,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
         ApplyMovement();
         ResetVelocity();
-        Debug.Log(velocity);
+        UpdateAnimation();
     }
     private void ApplyMovement()
     {
@@ -51,8 +52,8 @@ public class PlayerMovement : MonoBehaviour
         if(!context.started) return;
         if(!characterController.isGrounded) return;
 
-        velocity += 5f;
-        
+        velocity += 15f;
+        animator.SetTrigger("Jumped");
     }
 
     private void ApplyGravity()
@@ -63,6 +64,19 @@ public class PlayerMovement : MonoBehaviour
         }
         
         direction.y = velocity;
+    }
+
+    private void UpdateAnimation()
+    {
+        bool hasMovementInput = new Vector3(direction.x, 0, direction.z).sqrMagnitude > 0.01f;
+        bool isMoving = hasMovementInput && !movement.isSprinting;
+        bool isSprinting = hasMovementInput && movement.isSprinting;
+        bool isFalling = direction.y <= 0f;
+
+        animator.SetBool("isMoving", isMoving);
+        animator.SetBool("isSprinting", isSprinting);
+        animator.SetBool("isGrounded", characterController.isGrounded);
+        animator.SetBool("isFalling", isFalling);
     }
 
     private void ResetVelocity()
