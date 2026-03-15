@@ -2,15 +2,35 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float Health, MaxHealth;
+    private float Health, MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
+     Block, JumpHeight, Damage, Armor;
+    private int DashNumber, JumpNumber;
 
-    [SerializeField]
-    private HealthBarUI healthBarUI;
+    [SerializeField] private HealthBarUI healthBarUI;
+    [SerializeField] private PlayerMovement playerMovement;
 
+    private void Awake()
+    {
+        MaxHealth = 100f;
+        Health = MaxHealth;
+        Regeneration = 1f;
+        AttackSpeed = 1f;
+        MovementSpeed = 5f;
+        Block = 0.2f;
+        JumpHeight = 4f;
+        Damage = 10f;
+        Armor = 0.1f;
+        DashNumber = 1;
+        JumpNumber = 1;
+    }
     private void Start()
     {
         healthBarUI.SetMaxHealth(MaxHealth);
         healthBarUI.SetHealth(Health);
+
+        playerMovement.SetSpeed(MovementSpeed);
+        playerMovement.SetJumpHeight(JumpHeight);
+        playerMovement.SetJumpNumber(JumpNumber);
     }
     void Update()
     {

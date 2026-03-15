@@ -10,6 +10,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 direction;
     private float gravity = -9.81f;
     private float velocity;
+    private float jumpHeight;
+    private int maxJumpNumber;
+    private int remainingJumpNumber;
     private Camera mainCamera;
     [SerializeField] private Movement movement;
     private Animator animator;
@@ -19,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         mainCamera = Camera.main;
+        movement = new Movement(2f, 10f);
     }
 
     private void Update()
@@ -50,9 +54,11 @@ public class PlayerMovement : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
         if(!context.started) return;
-        if(!characterController.isGrounded) return;
-
-        velocity += 15f;
+        if(!characterController.isGrounded && remainingJumpNumber <= 0) return;
+        else if(characterController.isGrounded) remainingJumpNumber = maxJumpNumber;
+        
+        velocity += jumpHeight;
+        remainingJumpNumber--;
         animator.SetTrigger("Jumped");
     }
 
@@ -98,14 +104,37 @@ public class PlayerMovement : MonoBehaviour
         movement.isSprinting = context.started || context.performed;
     }
 
+    public void SetSpeed(float newSpeed)
+    {
+        movement.speed = newSpeed;
+    }
+
+    public void SetJumpHeight(float newJumpHeight)
+    {
+        jumpHeight = newJumpHeight;
+    }
+
+    public void SetJumpNumber(int newJumpNumber)
+    {
+        maxJumpNumber = newJumpNumber;
+        remainingJumpNumber = newJumpNumber;
+    }
 }
 
 [Serializable]
-public struct Movement
+internal struct Movement
 {
-    public float speed;
-    public float multiplier;
-    public float acceleration;
-    [HideInInspector] public bool isSprinting;
-    [HideInInspector] public float currentSpeed;
+    internal float speed;
+    internal float multiplier;
+    internal float acceleration;
+    internal bool isSprinting;
+    internal float currentSpeed;
+    internal Movement(float multiplier, float acceleration)
+    {
+        speed = 0f;
+        this.multiplier = multiplier;
+        this.acceleration = acceleration;
+        isSprinting = false;
+        currentSpeed = 0f;
+    }
 }
