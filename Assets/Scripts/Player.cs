@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        
+        Attack();
     }
 
     public void TakeDamageOrHeal(float healthChange)
@@ -42,5 +42,25 @@ public class Player : MonoBehaviour
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
+    }
+
+    private void Attack()
+    {
+        if(Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            float attackRange = 2f;
+
+            Vector3 center = transform.position + transform.forward * (attackRange * 0.5f);
+            Collider[] hits = Physics.OverlapSphere(center, attackRange);
+
+            foreach (Collider hit in hits)
+            {
+                var enemy = hit.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamageOrHeal(-Damage);
+                }
+            }
+        }
     }
 }
