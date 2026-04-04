@@ -6096,6 +6096,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b271cbafcec51142aa000ca5d6fbd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  player: {fileID: 9251416}
+  MaxHealth: 100
+  Regeneration: 0.5
+  AttackSpeed: 2
+  MovementSpeed: 2
+  Block: 1
+  JumpHeight: 1
+  Damage: 10
+  Armor: 1
+  AttackRange: 2
+  timeBetweenAttacks: 2
 --- !u!1 &859532953 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2764512629625626004, guid: 110742194e741f04da0a8f463fb0bcb9, type: 3}

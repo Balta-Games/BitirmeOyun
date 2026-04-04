@@ -3,7 +3,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private float Health, MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
-     Block, JumpHeight, Damage, Armor;
+     Block, JumpHeight, Damage, Armor, AttackRange;
     private int DashNumber, JumpNumber;
 
     [SerializeField] private HealthBarUI healthBarUI;
@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
         JumpHeight = 4f;
         Damage = 10f;
         Armor = 0.1f;
+        AttackRange = 2f;
         DashNumber = 1;
         JumpNumber = 1;
     }
@@ -35,6 +36,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Attack();
+        RegenerateHealth();
     }
 
     public void TakeDamageOrHeal(float healthChange)
@@ -42,6 +44,14 @@ public class Player : MonoBehaviour
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
+    }
+
+    private void RegenerateHealth()
+    {
+        if (Health < MaxHealth)
+        {
+            TakeDamageOrHeal(Regeneration * Time.deltaTime);
+        }
     }
 
     private void Attack()
