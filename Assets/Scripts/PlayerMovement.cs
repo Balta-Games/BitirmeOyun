@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private Camera mainCamera;
     [SerializeField] private Movement movement;
     private Animator animator;
+    private bool isAttacking;
 
     private void Awake()
     {
@@ -35,6 +36,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private void ApplyMovement()
     {
+        if(isAttacking)
+        {
+            movement.currentSpeed = 0f;
+            return;
+        }
+
         float targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
         movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
         characterController.Move(direction * movement.currentSpeed * Time.deltaTime);
@@ -97,6 +104,17 @@ public class PlayerMovement : MonoBehaviour
     {
         input = context.ReadValue<Vector2>();
         direction = new Vector3(input.x, 0, input.y);
+    }
+
+    public void Attack(InputAction.CallbackContext context)
+    {
+        if(isAttacking) return;
+        isAttacking = true;
+        animator.SetTrigger("isAttacked");
+    }
+    public void EndAttack()
+    {
+        isAttacking = false;
     }
 
     public void Sprint(InputAction.CallbackContext context)
