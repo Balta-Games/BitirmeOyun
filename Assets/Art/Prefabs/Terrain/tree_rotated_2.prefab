@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5772135823006292548}
   - component: {fileID: 4812490857515341716}
+  - component: {fileID: 3615802220914058426}
+  - component: {fileID: 2286803533660939262}
   m_Layer: 0
   m_Name: tree_rotated_2
   m_TagString: Untagged
@@ -58,6 +60,52 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers: []
   m_Enabled: 1
+--- !u!136 &3615802220914058426
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207178802688317781}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 5.596838
+  m_Direction: 1
+  m_Center: {x: 0, y: 2.634262, z: 0}
+--- !u!136 &2286803533660939262
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207178802688317781}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2.46
+  m_Height: 7.08
+  m_Direction: 2
+  m_Center: {x: 0, y: 4.1256437, z: -0.06999993}
 --- !u!1001 &3821480259106410463
 PrefabInstance:
   m_ObjectHideFlags: 0
