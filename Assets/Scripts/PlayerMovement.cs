@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Movement movement;
     private Animator animator;
     private bool isAttacking;
+    private bool isBlocking;
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void ApplyMovement()
     {
-        if(isAttacking)
+        if(isAttacking ||isBlocking)
         {
             movement.currentSpeed = 0f;
             return;
@@ -115,6 +116,13 @@ public class PlayerMovement : MonoBehaviour
     public void EndAttack()
     {
         isAttacking = false;
+    }
+    public void Block(InputAction.CallbackContext context)
+    {
+        isBlocking = context.ReadValueAsButton();
+
+        animator.SetBool("isBlocking", isBlocking);
+        animator.SetTrigger("rightClicked");
     }
 
     public void Sprint(InputAction.CallbackContext context)
