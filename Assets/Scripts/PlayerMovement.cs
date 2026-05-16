@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private bool isAttacking;
 
+    [SerializeField] private AxeHitbox axeHitbox;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -111,10 +113,12 @@ public class PlayerMovement : MonoBehaviour
         if(isAttacking) return;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
+        axeHitbox.SetActive(true);
     }
     public void EndAttack()
     {
         isAttacking = false;
+        axeHitbox.SetActive(false);
     }
 
     public void Sprint(InputAction.CallbackContext context)

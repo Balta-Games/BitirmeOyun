@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private HealthBarUI healthBarUI;
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private AxeHitbox axeHitbox;
 
     private void Awake()
     {
@@ -32,10 +33,11 @@ public class Player : MonoBehaviour
         playerMovement.SetSpeed(MovementSpeed);
         playerMovement.SetJumpHeight(JumpHeight);
         playerMovement.SetJumpNumber(JumpNumber);
+
+        axeHitbox.SetDamage(Damage);
     }
     void Update()
     {
-        Attack();
         RegenerateHealth();
     }
 
@@ -51,26 +53,6 @@ public class Player : MonoBehaviour
         if (Health < MaxHealth)
         {
             TakeDamageOrHeal(Regeneration * Time.deltaTime);
-        }
-    }
-
-    private void Attack()
-    {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            float attackRange = 2f;
-
-            Vector3 center = transform.position + transform.forward * (attackRange * 0.5f);
-            Collider[] hits = Physics.OverlapSphere(center, attackRange);
-
-            foreach (Collider hit in hits)
-            {
-                var enemy = hit.GetComponent<Enemy>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamageOrHeal(-Damage);
-                }
-            }
         }
     }
 }
