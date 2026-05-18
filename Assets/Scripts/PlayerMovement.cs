@@ -68,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
         velocity += jumpHeight;
         remainingJumpNumber--;
         animator.SetTrigger("Jumped");
+        PlayerAnalytics.Instance.AddJump();
     }
 
     private void ApplyGravity()
@@ -112,6 +113,7 @@ public class PlayerMovement : MonoBehaviour
         if(isAttacking) return;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
+        PlayerAnalytics.Instance.AddAttack();
     }
     public void EndAttack()
     {
@@ -123,11 +125,21 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetBool("isBlocking", isBlocking);
         animator.SetTrigger("rightClicked");
+
+        if(context.started)
+        {
+            PlayerAnalytics.Instance.AddBlock();
+        }
     }
 
     public void Sprint(InputAction.CallbackContext context)
     {
         movement.isSprinting = context.started || context.performed;
+
+        if(context.started)
+        {
+            PlayerAnalytics.Instance.AddSprint();
+        }
     }
 
     public void SetSpeed(float newSpeed)
