@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class HealthBarUI : MonoBehaviour
 
     [SerializeField]
     private RectTransform healthBar;
+    [SerializeField] private TextMeshProUGUI healthText;
 
     public void SetMaxHealth(float maxHealth)
     {
@@ -19,5 +21,10 @@ public class HealthBarUI : MonoBehaviour
         float newWidth = (Health / MaxHealth) * Width;
 
         healthBar.sizeDelta = new Vector2(newWidth, Height);
+    }
+
+    public void setHealthText()
+    {
+        healthText.text = Health.ToString("F0");
     }
 }

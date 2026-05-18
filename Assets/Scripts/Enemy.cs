@@ -9,15 +9,18 @@ public class Enemy : MonoBehaviour
      Block, JumpHeight, Damage, Armor, AttackRange, timeBetweenAttacks;
     private float Health;
     private bool alreadyAttacked;
+    [SerializeField] private HealthBarUI healthBarUI;
 
     private void Awake()
     {
         Health = MaxHealth;
         alreadyAttacked = false;
-        if(player == null)
-        {
-            Debug.LogError("Player reference is not set in the Enemy script.");
-        }
+    }
+
+    private void Start()
+    {
+        healthBarUI.SetMaxHealth(MaxHealth);
+        healthBarUI.SetHealth(Health);
     }
 
     private void Update()
@@ -37,7 +40,8 @@ public class Enemy : MonoBehaviour
     {
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
-        Debug.Log($"Enemy Health: {Health}/{MaxHealth}");
+        healthBarUI.SetHealth(Health);
+        healthBarUI.setHealthText();
     }
 
     private void RegenerateHealth()

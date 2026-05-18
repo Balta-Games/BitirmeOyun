@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private bool isAttacking;
     private bool isBlocking;
+    [SerializeField] private AxeHitbox axeHitbox;
 
     private void Awake()
     {
@@ -114,10 +115,12 @@ public class PlayerMovement : MonoBehaviour
         isAttacking = true;
         animator.SetTrigger("isAttacked");
         PlayerAnalytics.Instance.AddAttack();
+        axeHitbox.SetActive(true);
     }
     public void EndAttack()
     {
         isAttacking = false;
+        axeHitbox.SetActive(false);
     }
     public void Block(InputAction.CallbackContext context)
     {
