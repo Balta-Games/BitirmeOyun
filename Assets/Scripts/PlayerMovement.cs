@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
     {
         ApplyRotation();
         ApplyGravity();
-
         ApplyMovement();
         ResetVelocity();
         UpdateAnimation();
@@ -51,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void ApplyRotation()
     {
+        if(isAttacking || isBlocking || isRolling) return;
+
         if (input.sqrMagnitude == 0f) return;
 
         direction = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0) * new Vector3(input.x, 0, input.y);
@@ -58,19 +60,6 @@ public class PlayerMovement : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 500f);
-    }
-    public void Jump(InputAction.CallbackContext context)
-    {
-        if(!context.started) return;
-        if(!characterController.isGrounded && remainingJumpNumber <= 0) return;
-        else if(characterController.isGrounded) remainingJumpNumber = maxJumpNumber;
-
-
-        animator.applyRootMotion = false;
-        velocity += jumpHeight;
-        remainingJumpNumber--;
-        animator.SetTrigger("Jumped");
-        PlayerAnalytics.Instance.AddJump();
     }
     private void ApplyGravity()
     {
@@ -101,6 +90,19 @@ public class PlayerMovement : MonoBehaviour
             velocity = -1f;
         }
     }
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if(!context.started || isAttacking || isRolling) return;
+        if(!characterController.isGrounded && remainingJumpNumber <= 0) return;
+        else if(characterController.isGrounded) remainingJumpNumber = maxJumpNumber;
+
+
+        animator.applyRootMotion = false;
+        velocity += jumpHeight;
+        remainingJumpNumber--;
+        animator.SetTrigger("Jumped");
+        PlayerAnalytics.Instance.AddJump();
+    }
     public void Move(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
@@ -108,8 +110,9 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Attack(InputAction.CallbackContext context)
     {
+        if(isAttacking || isRolling) return;
+
         animator.applyRootMotion = true;
-        if(isAttacking) return;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
         PlayerAnalytics.Instance.AddAttack();
@@ -143,21 +146,22 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Roll(InputAction.CallbackContext context)
     {
+        if (!context.started || isRolling || isAttacking || isBlocking) return;
+
         animator.applyRootMotion = true;
-        if (!context.started || isRolling) return;
         isRolling = true;
         characterController.height = 0.3f;
         animator.SetTrigger("Rolled");
         PlayerAnalytics.Instance.AddRoll();
     }
-    public void closeRootMotion()
-    {
-        animator.applyRootMotion = false;
-    }
-    public void stopRoll()
+    public void endRoll()
     {
         isRolling = false;
         characterController.height = 1.85f;
+    }
+    public void closeRootMotion()
+    {
+        animator.applyRootMotion = false;
     }
     public void SetSpeed(float newSpeed)
     {

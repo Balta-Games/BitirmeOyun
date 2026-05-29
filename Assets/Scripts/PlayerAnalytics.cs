@@ -63,10 +63,10 @@ public class PlayerAnalytics : MonoBehaviour
         {
             if (!fileExists)
             {
-                writer.WriteLine("Attack,Block,Jump,Sprint");
+                writer.WriteLine("Attack,Block,Jump,Sprint,Dodge");
             }
 
-            writer.WriteLine($"{attackCount},{blockCount},{jumpCount},{sprintCount}");
+            writer.WriteLine($"{attackCount},{blockCount},{jumpCount},{sprintCount},{rollCount}");
         }
 
         Debug.Log("CSV kaydedildi: " + path);
