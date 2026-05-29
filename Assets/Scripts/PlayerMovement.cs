@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isAttacking;
     private bool isBlocking;
     [SerializeField] private AxeHitbox axeHitbox;
+    private bool isRolling;
 
     private void Awake()
     {
@@ -27,18 +28,18 @@ public class PlayerMovement : MonoBehaviour
         mainCamera = Camera.main;
         movement = new Movement(2f, 10f);
     }
-
     private void Update()
     {
         ApplyRotation();
         ApplyGravity();
+
         ApplyMovement();
         ResetVelocity();
         UpdateAnimation();
     }
     private void ApplyMovement()
     {
-        if(isAttacking ||isBlocking)
+        if(isAttacking || isBlocking || isRolling)
         {
             movement.currentSpeed = 0f;
             return;
@@ -48,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
         movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
         characterController.Move(direction * movement.currentSpeed * Time.deltaTime);
     }
-
     private void ApplyRotation()
     {
         if (input.sqrMagnitude == 0f) return;
@@ -59,29 +59,28 @@ public class PlayerMovement : MonoBehaviour
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * 500f);
     }
-
     public void Jump(InputAction.CallbackContext context)
     {
         if(!context.started) return;
         if(!characterController.isGrounded && remainingJumpNumber <= 0) return;
         else if(characterController.isGrounded) remainingJumpNumber = maxJumpNumber;
-        
+
+
+        animator.applyRootMotion = false;
         velocity += jumpHeight;
         remainingJumpNumber--;
         animator.SetTrigger("Jumped");
         PlayerAnalytics.Instance.AddJump();
     }
-
     private void ApplyGravity()
     {
         if(!characterController.isGrounded)
         {
             velocity += gravity * Time.deltaTime;
         }
-        
+
         direction.y = velocity;
     }
-
     private void UpdateAnimation()
     {
         bool hasMovementInput = new Vector3(direction.x, 0, direction.z).sqrMagnitude > 0.01f;
@@ -89,12 +88,12 @@ public class PlayerMovement : MonoBehaviour
         bool isSprinting = hasMovementInput && movement.isSprinting;
         bool isFalling = direction.y <= 0f;
 
+
         animator.SetBool("isMoving", isMoving);
         animator.SetBool("isSprinting", isSprinting);
         animator.SetBool("isGrounded", characterController.isGrounded);
         animator.SetBool("isFalling", isFalling);
     }
-
     private void ResetVelocity()
     {
         if(characterController.isGrounded)
@@ -102,15 +101,14 @@ public class PlayerMovement : MonoBehaviour
             velocity = -1f;
         }
     }
-
     public void Move(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
         direction = new Vector3(input.x, 0, input.y);
     }
-
     public void Attack(InputAction.CallbackContext context)
     {
+        animator.applyRootMotion = true;
         if(isAttacking) return;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
@@ -134,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
             PlayerAnalytics.Instance.AddBlock();
         }
     }
-
     public void Sprint(InputAction.CallbackContext context)
     {
         movement.isSprinting = context.started || context.performed;
@@ -144,17 +141,32 @@ public class PlayerMovement : MonoBehaviour
             PlayerAnalytics.Instance.AddSprint();
         }
     }
-
+    public void Roll(InputAction.CallbackContext context)
+    {
+        animator.applyRootMotion = true;
+        if (!context.started || isRolling) return;
+        isRolling = true;
+        characterController.height = 0.3f;
+        animator.SetTrigger("Rolled");
+        PlayerAnalytics.Instance.AddRoll();
+    }
+    public void closeRootMotion()
+    {
+        animator.applyRootMotion = false;
+    }
+    public void stopRoll()
+    {
+        isRolling = false;
+        characterController.height = 1.85f;
+    }
     public void SetSpeed(float newSpeed)
     {
         movement.speed = newSpeed;
     }
-
     public void SetJumpHeight(float newJumpHeight)
     {
         jumpHeight = newJumpHeight;
     }
-
     public void SetJumpNumber(int newJumpNumber)
     {
         maxJumpNumber = newJumpNumber;

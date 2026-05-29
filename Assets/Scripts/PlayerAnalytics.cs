@@ -9,6 +9,7 @@ public class PlayerAnalytics : MonoBehaviour
     private int blockCount;
     private int jumpCount;
     private int sprintCount;
+    private int rollCount;
 
     private void Awake()
     {
@@ -40,6 +41,11 @@ public class PlayerAnalytics : MonoBehaviour
     public void AddSprint()
     {
         sprintCount++;
+    }
+
+    public void AddRoll()
+    {
+        rollCount++;
     }
 
     private void OnApplicationQuit()
