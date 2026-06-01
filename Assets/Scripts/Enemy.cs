@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -68,6 +69,7 @@ public class Enemy : MonoBehaviour
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
         healthBarUI.setHealthText();
+        OnDeath();
     }
 
     private void RegenerateHealth()
@@ -153,5 +155,15 @@ public class Enemy : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+
+    private void OnDeath()
+    {
+        if (Health <= 0)
+        {
+            SceneFlow.setMenuState(2);
+            SceneManager.LoadScene("Menu");
+            Destroy(gameObject);
+        }
     }
 }

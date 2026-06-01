@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     private float Health, MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
+        OnDeath();
     }
 
     private void RegenerateHealth()
@@ -53,6 +54,15 @@ public class Player : MonoBehaviour
         if (Health < MaxHealth)
         {
             TakeDamageOrHeal(Regeneration * Time.deltaTime);
+        }
+    }
+
+    private void OnDeath()
+    {
+        if (Health <= 0)
+        {
+            SceneFlow.setMenuState(1);
+            SceneManager.LoadScene("Menu");
         }
     }
 }
