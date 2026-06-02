@@ -84,10 +84,9 @@ public class Enemy : MonoBehaviour
     {
         if (!alreadyAttacked)
         {
+            animator.applyRootMotion = true;
             alreadyAttacked = true;
             animator.SetTrigger("isSwiped");
-            //Invoke(nameof(ResetAttack), timeBetweenAttacks);
-
             player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
         }
     }
@@ -96,12 +95,11 @@ public class Enemy : MonoBehaviour
     {
         if (!alreadyAttacked)
         {
+            animator.applyRootMotion = true;
             AoeAttackObject.SetActive(true);
             StartCoroutine(GrowHitbox());
             alreadyAttacked = true;
             animator.SetTrigger("isAOEAttacked");
-            //Invoke(nameof(ResetAttack), timeBetweenAttacks);
-
             player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
         }
     }
@@ -155,6 +153,10 @@ public class Enemy : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+    private void closeRootMotion()
+    {
+        animator.applyRootMotion = false;
     }
 
     private void OnDeath()
