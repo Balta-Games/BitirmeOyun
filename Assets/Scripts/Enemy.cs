@@ -6,6 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
+    public enum BossAction
+    {
+        None,
+        Swipe,
+        AOE,
+        Dodge,
+        Block,
+    }
+    public enum ActionCategory
+    {
+        Attack,
+        Defense,
+    }
     [SerializeField] private Transform player;
     [SerializeField] private float MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
      Block, JumpHeight, Damage, Armor, AttackRange, timeBetweenAttacks;
@@ -18,6 +31,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float growDuration = 1f;
     private Animator animator;
     private bool isWalking;
+    private BossAction lastAction = BossAction.None;
+    private bool canUseAOE = true;
+    private bool isThinking = false;
+    [SerializeField] private float thinkTime = 1.5f;
+    private float aggresivenessWeight = 1f;
+    private float defenseWeight = 1f;
+    private float attackWeight = 1f;
 
     private void Awake()
     {
@@ -40,16 +60,11 @@ public class Enemy : MonoBehaviour
         if(PlayerInAttackRange())
         {
             isWalking = false;
-            animator.SetBool("isWalking", isWalking);
-            int randomAttack = UnityEngine.Random.Range(0, 2);
-            Debug.Log(randomAttack);
-            if (randomAttack == 0)
+            animator.SetBool("isWalking", false);
+
+            if(!alreadyAttacked && !isThinking)
             {
-                Attack();
-            }
-            else
-            {
-                AOEAttack();
+                StartCoroutine(ThinkAndAct());
             }
         }
         else
@@ -61,6 +76,67 @@ public class Enemy : MonoBehaviour
             
         }
         RegenerateHealth();
+    }
+    private ActionCategory DecideCategory()
+    {
+        float normalLimit = 50f;
+        float roll = UnityEngine.Random.Range(0f, 100f);
+
+        if (roll < normalLimit * aggresivenessWeight)
+            return ActionCategory.Attack;
+        else
+            return ActionCategory.Defense;
+    }
+
+    private BossAction DecideAction()
+    {
+        ActionCategory category = DecideCategory();
+        float roll = UnityEngine.Random.Range(0f, 100f);
+
+        if (category == ActionCategory.Attack)
+        {
+            if (roll < 50f * attackWeight)
+                return BossAction.Swipe;
+            else
+                return BossAction.AOE;
+        }
+        else
+        {
+            if (roll < 50f * defenseWeight)
+                return BossAction.Block;
+            else
+                return BossAction.Dodge;
+        }
+    }
+
+    private void ExecuteAction(BossAction action)
+    {
+        switch (action)
+        {
+            case BossAction.Swipe:
+                Attack();
+                break;
+            case BossAction.AOE:
+                AOEAttack();
+                break;
+            case BossAction.Block:
+                Blocks();
+                break;
+            case BossAction.Dodge:
+                Dodge();
+                break;
+        }
+
+        lastAction = action;
+    }
+
+    private IEnumerator ThinkAndAct()
+    {
+        isThinking = true;
+        yield return new WaitForSeconds(thinkTime);
+        BossAction action = DecideAction();
+        ExecuteAction(action);
+        isThinking = false;
     }
 
     public void TakeDamageOrHeal(float healthChange)
@@ -95,13 +171,33 @@ public class Enemy : MonoBehaviour
     {
         if (!alreadyAttacked)
         {
+            if(!canUseAOE)
+                return;
+
             animator.applyRootMotion = true;
+            StartCoroutine(AOECooldown());
             AoeAttackObject.SetActive(true);
             StartCoroutine(GrowHitbox());
             alreadyAttacked = true;
             animator.SetTrigger("isAOEAttacked");
             player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
         }
+    }
+    public IEnumerator AOECooldown()
+    {
+        canUseAOE = false;
+
+        yield return new WaitForSeconds(8f);
+
+        canUseAOE = true;
+    }
+    public void Blocks()
+    {
+        Debug.Log("Blocked");
+    }
+    public void Dodge()
+    {
+        Debug.Log("Dodged");
     }
 
      private IEnumerator GrowHitbox()
