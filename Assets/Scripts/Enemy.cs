@@ -35,14 +35,16 @@ public class Enemy : MonoBehaviour
     private bool canUseAOE = true;
     private bool isThinking = false;
     [SerializeField] private float thinkTime = 1.5f;
-    private float aggresivenessWeight = 0.4f;
-    private float defenseWeight = 1.6f;
-    private float attackWeight = 1f;
+    private float aggresivenessWeight = 1.8f;
+    private float defenseWeight = 0.2f;
+    private float attackWeight = 2f;
     private bool isDodging = false;
     private float dodgeDistance = 6f;
     private float dodgeDuration = 0.375f;
     [SerializeField] private float blockDuration = 3f;
     private bool isBlocking = false;
+    [SerializeField] private GolemHitbox golemArmHitbox;
+    [SerializeField] private GolemHitbox golemAOEHitbox;
 
     private void Awake()
     {
@@ -58,6 +60,8 @@ public class Enemy : MonoBehaviour
         AoeHitBox.radius = 0f;
         healthBarUI.SetMaxHealth(MaxHealth);
         healthBarUI.SetHealth(Health);
+        golemArmHitbox.SetDamage(Damage);
+        golemAOEHitbox.SetDamage(Damage);
     }
 
     private void Update()
@@ -170,7 +174,7 @@ public class Enemy : MonoBehaviour
         {
             alreadyAttacked = true;
             animator.SetTrigger("isSwiped");
-            player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
+            golemArmHitbox.SetActive(true);
         }
     }
 
@@ -186,8 +190,13 @@ public class Enemy : MonoBehaviour
             StartCoroutine(GrowHitbox());
             alreadyAttacked = true;
             animator.SetTrigger("isAOEAttacked");
-            player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
+            golemAOEHitbox.SetActive(true);
         }
+    }
+
+    public void closeGolemHitbox()
+    {
+        golemArmHitbox.SetActive(false);
     }
     public IEnumerator AOECooldown()
     {
@@ -298,6 +307,7 @@ public class Enemy : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+        golemAOEHitbox.SetActive(false);
     }
 
     private void OnDeath()

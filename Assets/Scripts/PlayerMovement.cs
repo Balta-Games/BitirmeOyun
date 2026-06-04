@@ -20,7 +20,6 @@ public class PlayerMovement : MonoBehaviour
     private bool isAttacking;
     private bool isBlocking;
     [SerializeField] private AxeHitbox axeHitbox;
-    [SerializeField] private Collider axeCollider;
     private bool isRolling;
 
     private void Awake()
@@ -119,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isAttacking || isRolling) return;
 
-        axeCollider.enabled = true;
         animator.applyRootMotion = true;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
@@ -128,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
     }
     public void closeAxeCollider()
     {
-        axeCollider.enabled = false;
+        axeHitbox.SetActive(false);
     }
     public void EndAttack()
     {
