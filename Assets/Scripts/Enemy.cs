@@ -35,9 +35,14 @@ public class Enemy : MonoBehaviour
     private bool canUseAOE = true;
     private bool isThinking = false;
     [SerializeField] private float thinkTime = 1.5f;
-    private float aggresivenessWeight = 1f;
-    private float defenseWeight = 1f;
+    private float aggresivenessWeight = 0.4f;
+    private float defenseWeight = 1.6f;
     private float attackWeight = 1f;
+    private bool isDodging = false;
+    private float dodgeDistance = 6f;
+    private float dodgeDuration = 0.375f;
+    [SerializeField] private float blockDuration = 3f;
+    private bool isBlocking = false;
 
     private void Awake()
     {
@@ -57,24 +62,27 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        if(PlayerInAttackRange())
+        if (isBlocking || isDodging)
+            return;
+
+        if (PlayerInAttackRange())
         {
             isWalking = false;
             animator.SetBool("isWalking", false);
 
-            if(!alreadyAttacked && !isThinking)
+            if (!alreadyAttacked && !isThinking)
             {
                 StartCoroutine(ThinkAndAct());
             }
         }
         else
         {
-            if(!alreadyAttacked)
+            if (!alreadyAttacked)
             {
                 ChasePlayer();
             }
-            
         }
+
         RegenerateHealth();
     }
     private ActionCategory DecideCategory()
@@ -120,7 +128,7 @@ public class Enemy : MonoBehaviour
                 AOEAttack();
                 break;
             case BossAction.Block:
-                Blocks();
+                StartCoroutine(BlockRoutine());
                 break;
             case BossAction.Dodge:
                 Dodge();
@@ -160,7 +168,6 @@ public class Enemy : MonoBehaviour
     {
         if (!alreadyAttacked)
         {
-            animator.applyRootMotion = true;
             alreadyAttacked = true;
             animator.SetTrigger("isSwiped");
             player.GetComponent<Player>().TakeDamageOrHeal(-Damage);
@@ -174,7 +181,6 @@ public class Enemy : MonoBehaviour
             if(!canUseAOE)
                 return;
 
-            animator.applyRootMotion = true;
             StartCoroutine(AOECooldown());
             AoeAttackObject.SetActive(true);
             StartCoroutine(GrowHitbox());
@@ -191,13 +197,54 @@ public class Enemy : MonoBehaviour
 
         canUseAOE = true;
     }
-    public void Blocks()
+    private IEnumerator BlockRoutine()
     {
-        Debug.Log("Blocked");
+        isBlocking = true;
+
+        animator.SetBool("isBlocking", true);
+        animator.SetTrigger("blockStarted");
+
+        yield return new WaitForSeconds(3f);
+
+        animator.SetBool("isBlocking", false);
+
+        isBlocking = false;
+
+        StartCoroutine(ThinkAndAct());
     }
     public void Dodge()
     {
-        Debug.Log("Dodged");
+        if(isDodging)
+            return;
+
+
+        animator.SetTrigger("isDodging");
+        StartCoroutine(DodgeMovement());
+    }
+
+    private IEnumerator DodgeMovement()
+    {
+        isDodging = true;
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + transform.right * dodgeDistance;
+
+        float elapsed = 0f;
+
+        while (elapsed < dodgeDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            transform.position = Vector3.Lerp(
+                startPos,
+                targetPos,
+                elapsed / dodgeDuration
+            );
+
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        isDodging = false;
     }
 
      private IEnumerator GrowHitbox()
@@ -226,6 +273,8 @@ public class Enemy : MonoBehaviour
 
     private void ChasePlayer()
     {
+        if (isDodging)
+            return;
         isWalking = true;
         Vector3 direction = (player.position - transform.position).normalized;
         transform.position += direction * MovementSpeed * Time.deltaTime;
@@ -249,10 +298,6 @@ public class Enemy : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
-    }
-    private void closeRootMotion()
-    {
-        animator.applyRootMotion = false;
     }
 
     private void OnDeath()

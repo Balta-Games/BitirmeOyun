@@ -55,15 +55,29 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.95286196
-        functionName: closeRootMotion
+      - time: 0.098468274
+        functionName: changeHeight
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9829932
+      - time: 0.7225993
+        functionName: changeHeight
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.92997813
         functionName: endRoll
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9452954
+        functionName: closeRootMotion
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

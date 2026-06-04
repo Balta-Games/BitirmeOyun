@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isAttacking;
     private bool isBlocking;
     [SerializeField] private AxeHitbox axeHitbox;
+    [SerializeField] private Collider axeCollider;
     private bool isRolling;
 
     private void Awake()
@@ -39,15 +40,21 @@ public class PlayerMovement : MonoBehaviour
     }
     private void ApplyMovement()
     {
-        if(isAttacking || isBlocking || isRolling)
+        float targetSpeed = 0f;
+
+        if (!isAttacking && !isBlocking && !isRolling)
         {
-            movement.currentSpeed = 0f;
-            return;
+            targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
         }
 
-        float targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
         movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
-        characterController.Move(direction * movement.currentSpeed * Time.deltaTime);
+
+        Vector3 horizontal = direction * movement.currentSpeed;
+        Vector3 finalMove = horizontal;
+
+        finalMove.y = velocity;
+
+        characterController.Move(finalMove * Time.deltaTime);
     }
     private void ApplyRotation()
     {
@@ -112,11 +119,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isAttacking || isRolling) return;
 
+        axeCollider.enabled = true;
         animator.applyRootMotion = true;
         isAttacking = true;
         animator.SetTrigger("isAttacked");
         PlayerAnalytics.Instance.AddAttack();
         axeHitbox.SetActive(true);
+    }
+    public void closeAxeCollider()
+    {
+        axeCollider.enabled = false;
     }
     public void EndAttack()
     {
@@ -150,14 +162,19 @@ public class PlayerMovement : MonoBehaviour
 
         animator.applyRootMotion = true;
         isRolling = true;
-        characterController.height = 0.3f;
         animator.SetTrigger("Rolled");
         PlayerAnalytics.Instance.AddRoll();
+    }
+    public void changeHeight()
+    {
+        if(characterController.height == 1.85f)
+            characterController.height = 0.7f;
+        else if(characterController.height == 0.7f)
+            characterController.height = 1.85f;
     }
     public void endRoll()
     {
         isRolling = false;
-        characterController.height = 1.85f;
     }
     public void closeRootMotion()
     {

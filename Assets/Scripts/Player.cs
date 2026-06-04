@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
         AttackSpeed = 1f;
         MovementSpeed = 5f;
         Block = 0.2f;
-        JumpHeight = 4f;
+        JumpHeight = 6f;
         Damage = 10f;
         Armor = 0.1f;
         AttackRange = 2f;
