@@ -3514,6 +3514,10 @@ PrefabInstance:
       value: 127.88737
       objectReference: {fileID: 0}
     - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
+      propertyPath: Block
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
       propertyPath: Damage
       value: 10
       objectReference: {fileID: 0}

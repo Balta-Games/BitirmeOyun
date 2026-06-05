@@ -35,9 +35,9 @@ public class Enemy : MonoBehaviour
     private bool canUseAOE = true;
     private bool isThinking = false;
     [SerializeField] private float thinkTime = 1.5f;
-    private float aggresivenessWeight = 1.8f;
-    private float defenseWeight = 0.2f;
-    private float attackWeight = 2f;
+    private float aggresivenessWeight = 1f;
+    private float defenseWeight = 1f;
+    private float attackWeight = 1f;
     private bool isDodging = false;
     private float dodgeDistance = 6f;
     private float dodgeDuration = 0.375f;
@@ -153,7 +153,14 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamageOrHeal(float healthChange)
     {
-        Health += healthChange;
+        if((!isBlocking && !isDodging) || healthChange > 0)
+        {
+            Health += healthChange;
+        }
+        else if(isBlocking && healthChange < 0)
+        {
+            Health += healthChange + Block;
+        }
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
         healthBarUI.setHealthText();
