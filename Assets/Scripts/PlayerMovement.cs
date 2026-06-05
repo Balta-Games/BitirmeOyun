@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using NUnit.Framework;
 using Unity.Mathematics;
 using UnityEngine;
@@ -166,9 +167,24 @@ public class PlayerMovement : MonoBehaviour
     public void changeHeight()
     {
         if(characterController.height == 1.85f)
-            characterController.height = 0.7f;
+            StartCoroutine(ChangeHeightCoroutine(0.7f, 0.5f));
         else if(characterController.height == 0.7f)
-            characterController.height = 1.85f;
+            StartCoroutine(ChangeHeightCoroutine(1.85f, 0.5f));
+    }
+
+    private IEnumerator ChangeHeightCoroutine(float targetHeight, float duration)
+    {
+        float startHeight = characterController.height;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            characterController.height = Mathf.Lerp(startHeight, targetHeight, elapsed / duration);
+            yield return null;
+        }
+
+        characterController.height = targetHeight; // son değeri garantiye almak için
     }
     public void endRoll()
     {
