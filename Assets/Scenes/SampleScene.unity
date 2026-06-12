@@ -3534,6 +3534,10 @@ PrefabInstance:
       value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
+      propertyPath: thinkTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
       propertyPath: AttackSpeed
       value: 1
       objectReference: {fileID: 0}
@@ -3554,6 +3558,10 @@ PrefabInstance:
       value: 3.8
       objectReference: {fileID: 0}
     - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
+      propertyPath: blockDuration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
       propertyPath: golemAOEHitbox
       value: 
       objectReference: {fileID: 219007895}
@@ -3561,6 +3569,10 @@ PrefabInstance:
       propertyPath: golemArmHitbox
       value: 
       objectReference: {fileID: 1205812745}
+    - target: {fileID: 3275393400526940645, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
+      propertyPath: timeBetweenAttacks
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 3414161604800089649, guid: ca68214c3af7a7e40ab261f67b940796, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -9.286863
