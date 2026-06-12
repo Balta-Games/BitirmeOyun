@@ -42,7 +42,18 @@ public class Player : MonoBehaviour
 
     public void TakeDamageOrHeal(float healthChange)
     {
-        Health += healthChange;
+        if(playerMovement.isBlocking && healthChange < 0)
+        {
+            Health += healthChange * (1 - Block);
+        }
+        else if(playerMovement.isRolling && healthChange < 0)
+        {
+            return;
+        }
+        else
+        {
+            Health += healthChange;
+        }
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);
         OnDeath();

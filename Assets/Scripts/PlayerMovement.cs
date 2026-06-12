@@ -19,9 +19,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Movement movement;
     private Animator animator;
     private bool isAttacking;
-    private bool isBlocking;
+    internal bool isBlocking;
     [SerializeField] private AxeHitbox axeHitbox;
-    private bool isRolling;
+    internal bool isRolling;
 
     private void Awake()
     {
