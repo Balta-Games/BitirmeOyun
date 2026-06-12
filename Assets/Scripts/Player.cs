@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     private float Health, MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
-     Block, JumpHeight, Damage, Armor, AttackRange;
+     Block, JumpHeight, Damage, AttackRange;
     private int DashNumber, JumpNumber;
 
     [SerializeField] private HealthBarUI healthBarUI;
@@ -14,14 +14,13 @@ public class Player : MonoBehaviour
     {
         MaxHealth = 100f;
         Health = MaxHealth;
-        Regeneration = 1f;
+        Regeneration = 0.5f;
         AttackSpeed = 1f;
         MovementSpeed = 5f;
-        Block = 0.2f;
+        Block = 0.7f;
         JumpHeight = 6f;
-        Damage = 10f;
-        Armor = 0.1f;
-        AttackRange = 2f;
+        Damage = 15f;
+        AttackRange = 1.8f;
         DashNumber = 1;
         JumpNumber = 1;
     }

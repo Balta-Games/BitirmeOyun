@@ -20,31 +20,20 @@ public class Enemy : MonoBehaviour
         Defense,
     }
     [SerializeField] private Transform player;
+
     [SerializeField] private float MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
-     Block, JumpHeight, Damage, Armor, AttackRange, timeBetweenAttacks;
-    private float Health;
-    private bool alreadyAttacked;
+     Block, Damage, AttackRange, timeBetweenAttacks, maxRadius = 4f,
+     growDuration = 1f, thinkTime = 1.5f, blockDuration = 3f;
+    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 1f,
+     dodgeDistance = 6f, dodgeDuration = 0.375f;
+    private bool alreadyAttacked, isWalking, canUseAOE = true, isThinking = false,
+     isDodging = false, isBlocking = false;
     [SerializeField] private HealthBarUI healthBarUI;
     [SerializeField] private GameObject AoeAttackObject;
     private SphereCollider AoeHitBox;
-    [SerializeField] private float maxRadius = 4f;
-    [SerializeField] private float growDuration = 1f;
     private Animator animator;
-    private bool isWalking;
     private BossAction lastAction = BossAction.None;
-    private bool canUseAOE = true;
-    private bool isThinking = false;
-    [SerializeField] private float thinkTime = 1.5f;
-    private float aggresivenessWeight = 1f;
-    private float defenseWeight = 1f;
-    private float attackWeight = 1f;
-    private bool isDodging = false;
-    private float dodgeDistance = 6f;
-    private float dodgeDuration = 0.375f;
-    [SerializeField] private float blockDuration = 3f;
-    private bool isBlocking = false;
-    [SerializeField] private GolemHitbox golemArmHitbox;
-    [SerializeField] private GolemHitbox golemAOEHitbox;
+    [SerializeField] private GolemHitbox golemArmHitbox, golemAOEHitbox;
 
     private void Awake()
     {
@@ -87,7 +76,7 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        RegenerateHealth();
+        //RegenerateHealth();
     }
     private ActionCategory DecideCategory()
     {
@@ -159,7 +148,7 @@ public class Enemy : MonoBehaviour
         }
         else if(isBlocking && healthChange < 0)
         {
-            Health += healthChange + Block;
+            Health += healthChange * (1 - Block);
         }
         Health = Mathf.Clamp(Health, 0, MaxHealth);
         healthBarUI.SetHealth(Health);

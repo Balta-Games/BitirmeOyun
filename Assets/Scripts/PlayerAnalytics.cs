@@ -55,7 +55,7 @@ public class PlayerAnalytics : MonoBehaviour
 
     private void SaveToCSV()
     {
-        string path = Path.Combine(@"C:\Users\habil\Desktop\BitirmeOyun\Assets\Data", "player_data.csv");
+        string path = Path.Combine(@"Assets\Data", "player_data.csv");
 
         bool fileExists = File.Exists(path);
 
