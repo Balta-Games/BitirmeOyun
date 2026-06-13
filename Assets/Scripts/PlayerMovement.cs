@@ -137,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
     public void Block(InputAction.CallbackContext context)
     {
         isBlocking = context.ReadValueAsButton();
+        if(isAttacking || isRolling) return;
 
         animator.SetBool("isBlocking", isBlocking);
         animator.SetTrigger("rightClicked");
