@@ -23,8 +23,8 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private float MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
      Block, Damage, AttackRange, timeBetweenAttacks, maxRadius = 4f,
-     growDuration = 1f, thinkTime = 1.5f, blockDuration = 3f;
-    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 1.9f,
+     growDuration = 3f, thinkTime = 1.5f, blockDuration = 3f;
+    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 0.2f,
      dodgeDistance = 6f, dodgeDuration = 0.375f;
     private bool alreadyAttacked, isWalking, canUseAOE = true, isThinking = false,
      isDodging = false, isBlocking = false;
@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     private Animator animator;
     private BossAction lastAction = BossAction.None;
     [SerializeField] private GolemHitbox golemArmHitbox, golemAOEHitbox;
+    private bool firstActionOnEngage = true;
 
     private void Awake()
     {
@@ -65,7 +66,17 @@ public class Enemy : MonoBehaviour
 
             if (!alreadyAttacked && !isThinking)
             {
-                StartCoroutine(ThinkAndAct());
+                if(firstActionOnEngage)
+                {
+                    firstActionOnEngage = false;
+                    BossAction action = DecideAction();
+                    ExecuteAction(action); 
+                }
+                else
+                {
+                    StartCoroutine(ThinkAndAct());
+                }
+                
             }
         }
         else
@@ -181,7 +192,7 @@ public class Enemy : MonoBehaviour
                 return;
 
             StartCoroutine(AOECooldown());
-            AoeAttackObject.SetActive(true);;
+            AoeAttackObject.SetActive(true);
             alreadyAttacked = true;
             animator.SetTrigger("isAOEAttacked");
             golemAOEHitbox.SetActive(true);
@@ -282,15 +293,18 @@ public class Enemy : MonoBehaviour
 
         AoeAttackObject.SetActive(false);
     }
-    private void StartAOEHitboxGrowth()
-    {
-        StartCoroutine(GrowHitbox());
-    }
 
     private void ChasePlayer()
     {
-        if (isDodging || isBlocking)
+        if (isDodging)
             return;
+        if (PlayerInAttackRange())
+        {
+            isWalking = false;
+            animator.SetBool("isWalking", false);
+            return;
+        }
+        firstActionOnEngage = true;
         isWalking = true;
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0;
