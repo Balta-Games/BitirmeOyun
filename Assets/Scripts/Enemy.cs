@@ -181,8 +181,7 @@ public class Enemy : MonoBehaviour
                 return;
 
             StartCoroutine(AOECooldown());
-            AoeAttackObject.SetActive(true);
-            StartCoroutine(GrowHitbox());
+            AoeAttackObject.SetActive(true);;
             alreadyAttacked = true;
             animator.SetTrigger("isAOEAttacked");
             golemAOEHitbox.SetActive(true);
@@ -283,10 +282,14 @@ public class Enemy : MonoBehaviour
 
         AoeAttackObject.SetActive(false);
     }
+    private void StartAOEHitboxGrowth()
+    {
+        StartCoroutine(GrowHitbox());
+    }
 
     private void ChasePlayer()
     {
-        if (isDodging)
+        if (isDodging || isBlocking)
             return;
         isWalking = true;
         Vector3 direction = (player.position - transform.position).normalized;
