@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
      Block, Damage, AttackRange, timeBetweenAttacks, maxRadius = 4f,
      growDuration = 1f, thinkTime = 1.5f, blockDuration = 3f;
-    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 1f,
+    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 1.9f,
      dodgeDistance = 6f, dodgeDuration = 0.375f;
     private bool alreadyAttacked, isWalking, canUseAOE = true, isThinking = false,
      isDodging = false, isBlocking = false;
@@ -170,7 +170,6 @@ public class Enemy : MonoBehaviour
         {
             alreadyAttacked = true;
             animator.SetTrigger("isSwiped");
-            golemArmHitbox.SetActive(true);
         }
     }
 
@@ -209,13 +208,22 @@ public class Enemy : MonoBehaviour
         animator.SetBool("isBlocking", true);
         animator.SetTrigger("blockStarted");
 
-        yield return new WaitForSeconds(3f);
+        float timer = 0f;
+
+        while (timer < blockDuration)
+        {
+            if (!PayerInBlockRange())
+                break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
         animator.SetBool("isBlocking", false);
-
         isBlocking = false;
 
-        StartCoroutine(ThinkAndAct());
+        if (PlayerInAttackRange())
+            StartCoroutine(ThinkAndAct());
     }
     public void Dodge()
     {
@@ -282,6 +290,7 @@ public class Enemy : MonoBehaviour
             return;
         isWalking = true;
         Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0;
         transform.position += direction * MovementSpeed * Time.deltaTime;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -293,17 +302,25 @@ public class Enemy : MonoBehaviour
         );
         animator.SetBool("isWalking", isWalking);
     }
-
     private bool PlayerInAttackRange()
     {
         float sqrDistance = (player.position - transform.position).sqrMagnitude;
         return sqrDistance <= AttackRange * AttackRange; 
+    }
+    private bool PayerInBlockRange()
+    {
+        float sqrDistance = (player.position - transform.position).sqrMagnitude;
+        return sqrDistance <= (AttackRange + 2f) * (AttackRange + 2f);
     }
 
     private void ResetAttack()
     {
         alreadyAttacked = false;
         golemAOEHitbox.SetActive(false);
+    }
+    private void OpenHitBox()
+    {
+        golemArmHitbox.SetActive(true);
     }
 
     private void OnDeath()
