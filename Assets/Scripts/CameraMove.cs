@@ -15,6 +15,8 @@ public class CameraMove : MonoBehaviour
     void Awake()
     {
         distance = Vector3.Distance(transform.position, lookAt.position);
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
