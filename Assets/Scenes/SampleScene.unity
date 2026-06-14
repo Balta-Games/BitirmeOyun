@@ -3846,6 +3846,10 @@ PrefabInstance:
       propertyPath: healthBarUI
       value: 
       objectReference: {fileID: 629667207}
+    - target: {fileID: 7784691657566146278, guid: 5b133a8055863164699d78ad107f7483, type: 3}
+      propertyPath: growDuration
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
