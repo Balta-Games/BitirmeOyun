@@ -48,12 +48,7 @@ public class PlayerAnalytics : MonoBehaviour
         rollCount++;
     }
 
-    private void OnApplicationQuit()
-    {
-        SaveToCSV();
-    }
-
-    private void SaveToCSV()
+    public void SaveToCSV(bool isDied)
     {
         string path = Path.Combine(@"Assets\Data", "player_data.csv");
 
@@ -63,10 +58,10 @@ public class PlayerAnalytics : MonoBehaviour
         {
             if (!fileExists)
             {
-                writer.WriteLine("Attack,Block,Jump,Sprint,Dodge");
+                writer.WriteLine("Attack,Block,Jump,Sprint,Dodge,IsDied");
             }
 
-            writer.WriteLine($"{attackCount},{blockCount},{jumpCount},{sprintCount},{rollCount}");
+            writer.WriteLine($"{attackCount},{blockCount},{jumpCount},{sprintCount},{rollCount},{(isDied ? 1 : 0)}");
         }
 
         Debug.Log("CSV kaydedildi: " + path);

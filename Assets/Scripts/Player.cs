@@ -71,6 +71,7 @@ public class Player : MonoBehaviour
     {
         if (Health <= 0)
         {
+            PlayerAnalytics.Instance.SaveToCSV(true);
             SceneFlow.setMenuState(1);
             SceneManager.LoadScene("Menu");
         }

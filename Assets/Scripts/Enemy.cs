@@ -344,6 +344,7 @@ public class Enemy : MonoBehaviour
     {
         if (Health <= 0)
         {
+            PlayerAnalytics.Instance.SaveToCSV(false);
             SceneFlow.setMenuState(2);
             SceneManager.LoadScene("Menu");
             Destroy(gameObject);
