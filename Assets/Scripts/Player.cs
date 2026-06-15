@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        MaxHealth = 100f;
+        MaxHealth = 1f;
         Health = MaxHealth;
         Regeneration = 0.5f;
         AttackSpeed = 1f;

@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float MaxHealth, Regeneration, AttackSpeed, MovementSpeed,
      Block, Damage, AttackRange, timeBetweenAttacks, maxRadius = 4f,
      growDuration = 3f, thinkTime = 1.5f, blockDuration = 3f;
-    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 0.2f,
+    private float Health, aggresivenessWeight = 1f, defenseWeight = 1f, attackWeight = 1f,
      dodgeDistance = 6f, dodgeDuration = 0.375f;
     private bool alreadyAttacked, isWalking, canUseAOE = true, isThinking = false,
      isDodging = false, isBlocking = false;
