@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ML;
 
 public class Enemy : MonoBehaviour
 {
@@ -345,6 +346,10 @@ public class Enemy : MonoBehaviour
         if (Health <= 0)
         {
             PlayerAnalytics.Instance.SaveToCSV(false);
+            double[] input = PlayerAnalytics.Instance.GetLastRecord();
+            double[] score = Model.Score(input);
+            Debug.Log("model inputu:" + string.Join(" | ",  input));
+            Debug.Log("model skoru:" + string.Join(" | ",  score));
             SceneFlow.setMenuState(2);
             SceneManager.LoadScene("Menu");
             Destroy(gameObject);
