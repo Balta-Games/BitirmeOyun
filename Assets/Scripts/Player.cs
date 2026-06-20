@@ -73,10 +73,6 @@ public class Player : MonoBehaviour
         if (Health <= 0)
         {
             PlayerAnalytics.Instance.SaveToCSV(true);
-            double[] input = PlayerAnalytics.Instance.GetLastRecord();
-            double[] score = Model.Score(input);
-            Debug.Log("model inputu:" + string.Join(" | ",  input));
-            Debug.Log("model skoru:" + string.Join(" | ",  score));
             SceneFlow.resetLevel();
             SceneFlow.setMenuState(1);
             SceneManager.LoadScene("Menu");

@@ -77,17 +77,17 @@ public class PlayerAnalytics : MonoBehaviour
     {
         string path = Path.Combine(@"Assets\Data", "player_data.csv");
 
-        bool fileExists = File.Exists(path);
+        if(File.Exists(path))
+        {
+            File.Delete(path);
+        }
 
         using (StreamWriter writer = new StreamWriter(path, true))
         {
-            if (!fileExists)
-            {
-                writer.WriteLine("BlockCount,SuccessfulBlockCount,BlockPerMinute,DodgeCount,"+
-                    "SuccessfulDodgeCount,DodgePerMinute,PanicDodges,DodgeDirection,"+
-                    "JumpCount,SprintCount,AttackCount,SuccessfulAttackCount,AttackPerMinute,"+
-                    "DamageDealt,DamageTaken,IsDied");
-            }
+            writer.WriteLine("BlockCount,SuccessfulBlockCount,BlockPerMinute,DodgeCount,"+
+                "SuccessfulDodgeCount,DodgePerMinute,PanicDodges,DodgeDirection,"+
+                "JumpCount,SprintCount,AttackCount,SuccessfulAttackCount,AttackPerMinute,"+
+                "DamageDealt,DamageTaken,IsDied");
 
             writer.WriteLine($"{createPlayerInput(isDied)}");
         }
@@ -99,6 +99,10 @@ public class PlayerAnalytics : MonoBehaviour
         string path = Path.Combine(@"Assets\Data", "player_data.csv");
         try
         {
+            if(!File.Exists(path))
+            {
+                return null;
+            }
             // Dosyadaki tüm satırları oku
             string[] allLines = File.ReadAllLines(path);
 

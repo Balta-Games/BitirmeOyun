@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 // Controls data between scenes.
@@ -29,5 +30,16 @@ public static class SceneFlow
     public static int getLevel()
     {
         return level;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void DeleteDataFile()
+    {
+        string path = Path.Combine(@"Assets\Data", "player_data.csv");
+
+        if(File.Exists(path))
+        {
+            File.Delete(path);
+        }
     }
 }

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ML;
+using System.Reflection.Emit;
 
 public class Enemy : MonoBehaviour
 {
@@ -53,6 +54,16 @@ public class Enemy : MonoBehaviour
         healthBarUI.SetHealth(Health);
         golemArmHitbox.SetDamage(Damage);
         golemAOEHitbox.SetDamage(Damage);
+
+        double[] input = PlayerAnalytics.Instance.GetLastRecord();
+        if(input != null)
+        {
+            Debug.Log("input: " + input);
+            double[] score = Model.Score(input);
+            Debug.Log("model inputu:" + string.Join(" | ",  input));
+            Debug.Log("model skoru:" + string.Join(" | ",  score));
+            UpdateWeights(score);
+        }
     }
 
     private void Update()
@@ -341,15 +352,41 @@ public class Enemy : MonoBehaviour
         golemArmHitbox.SetActive(true);
     }
 
+    private void UpdateWeights(double[] probabilities)
+    {
+        float label0Prob = (float)probabilities[0];
+        float label1Prob = (float)probabilities[1];
+        float label2Prob = (float)probabilities[2];
+        float label3Prob = (float)probabilities[3];
+
+        // label proporties -----------------------------
+        float l0_aggW = 1.5f, l0_attW = 0.4f, l0_defW = 1f,
+            l1_aggW = 0.6f, l1_attW = 0.3f, l1_defW = 1.7f,
+            l2_aggW = 1.2f, l2_attW = 1f, l2_defW = 0.5f,
+            l3_aggW = 0.4f, l3_attW = 1.6f, l3_defW = 0.3f;
+
+        // Weights multipliers calculations -------------
+        float mult_aggresivenessW = (l0_aggW * label0Prob) + (l1_aggW * label1Prob)
+        + (l2_aggW * label2Prob) + (l3_aggW * label3Prob); 
+
+        float mult_attackW = (l0_attW * label0Prob) + (l1_attW * label1Prob)
+        + (l2_attW * label2Prob) + (l3_attW * label3Prob); 
+
+        float mult_defenseW = (l0_defW * label0Prob) + (l1_defW * label1Prob)
+        + (l2_defW * label2Prob) + (l3_defW * label3Prob); 
+
+        // Applying multipliers to weights --------------
+        aggresivenessWeight *= mult_aggresivenessW; 
+        attackWeight *= mult_attackW;
+        defenseWeight *= mult_defenseW;
+        Debug.Log("agresif:" + aggresivenessWeight + " attack:" + attackWeight + " defense:" + defenseWeight);
+    }
+
     private void OnDeath()
     {
         if (Health <= 0)
         {
             PlayerAnalytics.Instance.SaveToCSV(false);
-            double[] input = PlayerAnalytics.Instance.GetLastRecord();
-            double[] score = Model.Score(input);
-            Debug.Log("model inputu:" + string.Join(" | ",  input));
-            Debug.Log("model skoru:" + string.Join(" | ",  score));
             if(SceneFlow.getLevel() == 3)
             {
                 SceneFlow.resetLevel();
