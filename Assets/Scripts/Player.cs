@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        MaxHealth = 1f;
+        MaxHealth = 100f;
         Health = MaxHealth;
         Regeneration = 0.5f;
         AttackSpeed = 1f;
@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
             double[] score = Model.Score(input);
             Debug.Log("model inputu:" + string.Join(" | ",  input));
             Debug.Log("model skoru:" + string.Join(" | ",  score));
+            SceneFlow.resetLevel();
             SceneFlow.setMenuState(1);
             SceneManager.LoadScene("Menu");
         }

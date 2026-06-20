@@ -3,10 +3,7 @@ using UnityEngine;
 // Controls data between scenes.
 public static class SceneFlow
 {
-    private static int startMenu = 0;
-    private static int restartMenu = 1;
-    private static int nextStageMenu = 2;
-    private static int winMenu = 3;
+    private static int level = 1;
     private static int menuState;
 
     public static void setMenuState(int state)
@@ -17,5 +14,20 @@ public static class SceneFlow
     public static int getMenuState()
     {
         return menuState;
+    }
+
+    public static void increaseLevel()
+    {
+        level++;
+    }
+
+    public static void resetLevel()
+    {
+        level = 1;
+    }
+
+    public static int getLevel()
+    {
+        return level;
     }
 }

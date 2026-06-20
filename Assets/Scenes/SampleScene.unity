@@ -4015,6 +4015,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9251416}
     - target: {fileID: 7784691657566146278, guid: 5b133a8055863164699d78ad107f7483, type: 3}
+      propertyPath: MaxHealth
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 7784691657566146278, guid: 5b133a8055863164699d78ad107f7483, type: 3}
       propertyPath: healthBarUI
       value: 
       objectReference: {fileID: 629667207}

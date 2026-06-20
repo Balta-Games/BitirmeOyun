@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,12 +8,18 @@ public class MainMenu : MonoBehaviour
     public GameObject restartMenu;
     public GameObject nextStageMenu;
     public GameObject winMenu;
+    public TextMeshProUGUI subtitle_nextStageMenu;
+
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         int menuState = SceneFlow.getMenuState();
+        if(menuState == 2)
+        {
+            subtitle_nextStageMenu.SetText("next: level " + SceneFlow.getLevel());
+        }
         activateSelectedMenu(menuState);
     }
 

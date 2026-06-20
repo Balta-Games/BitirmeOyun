@@ -350,7 +350,16 @@ public class Enemy : MonoBehaviour
             double[] score = Model.Score(input);
             Debug.Log("model inputu:" + string.Join(" | ",  input));
             Debug.Log("model skoru:" + string.Join(" | ",  score));
-            SceneFlow.setMenuState(2);
+            if(SceneFlow.getLevel() == 3)
+            {
+                SceneFlow.resetLevel();
+                SceneFlow.setMenuState(3);
+            }
+            else
+            {
+                SceneFlow.increaseLevel();
+                SceneFlow.setMenuState(2);
+            }
             SceneManager.LoadScene("Menu");
             Destroy(gameObject);
         }
