@@ -1,15 +1,18 @@
 using System.IO;
+using UnityEditor;
 using UnityEngine;
+using System;
+using System.Globalization;
 
 public class PlayerAnalytics : MonoBehaviour
 {
     public static PlayerAnalytics Instance;
-
     private int attackCount;
     private int blockCount;
     private int jumpCount;
     private int sprintCount;
     private int rollCount;
+    private System.Random random = new();
 
     private void Awake()
     {
@@ -48,6 +51,28 @@ public class PlayerAnalytics : MonoBehaviour
         rollCount++;
     }
 
+    private string getRandomDouble(int max)
+    {
+        double numberPart = random.Next(max);
+        double floatPart = random.NextDouble();
+        double number = numberPart + floatPart;
+        number = Math.Round(number, 2);
+        return number.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private string createPlayerInput(bool isDied)
+    {
+        string input = blockCount + "," + random.Next(12) + ","; //BlockCount + SuccessfulBlockCount
+        input += getRandomDouble(5) + "," + rollCount + ","; //BlockPerMinute + DodgeCount
+        input += random.Next(5) + "," + getRandomDouble(3) + ","; //SuccessfulDodgeCount + DodgePerMinute
+        input += random.Next(3) + "," + random.Next(4) + ","; //PanicDodges + DodgeDirection
+        input += jumpCount + "," + sprintCount + ","; //JumpCount + SprintCount
+        input += attackCount + "," + random.Next(21) + ","; //AttackCount + SuccessfulAttackCount
+        input += getRandomDouble(12) + "," + random.Next(250) + ","; //AttackPerMinute + DamageDealt
+        input += random.Next(100) + "," + (isDied ? 1 : 0); //DamageTaken + IsDied
+        return input;
+    }
+
     public void SaveToCSV(bool isDied)
     {
         string path = Path.Combine(@"Assets\Data", "player_data.csv");
@@ -58,10 +83,13 @@ public class PlayerAnalytics : MonoBehaviour
         {
             if (!fileExists)
             {
-                writer.WriteLine("Attack,Block,Jump,Sprint,Dodge,IsDied");
+                writer.WriteLine("BlockCount,SuccessfulBlockCount,BlockPerMinute,DodgeCount,"+
+                    "SuccessfulDodgeCount,DodgePerMinute,PanicDodges,DodgeDirection,"+
+                    "JumpCount,SprintCount,AttackCount,SuccessfulAttackCount,AttackPerMinute,"+
+                    "DamageDealt,DamageTaken,IsDied");
             }
 
-            writer.WriteLine($"{attackCount},{blockCount},{jumpCount},{sprintCount},{rollCount},{(isDied ? 1 : 0)}");
+            writer.WriteLine($"{createPlayerInput(isDied)}");
         }
 
         Debug.Log("CSV kaydedildi: " + path);
