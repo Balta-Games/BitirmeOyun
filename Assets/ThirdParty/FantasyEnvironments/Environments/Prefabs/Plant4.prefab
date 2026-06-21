@@ -13,6 +13,18 @@ PrefabInstance:
       value: Plant4
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: c4f88f3124028474187279adb2980734, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: c4f88f3124028474187279adb2980734, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: c4f88f3124028474187279adb2980734, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: c4f88f3124028474187279adb2980734, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
